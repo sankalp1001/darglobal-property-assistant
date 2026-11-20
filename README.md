@@ -138,7 +138,7 @@ OPENROUTER_API_KEY=... python -m eval.run_eval   # 19 eval questions -> eval/res
 
 Env vars: `OPENROUTER_API_KEY` (required for LLM answers), `PLANNER` (`llm` default,
 `hybrid` to save calls), `OPENROUTER_MODELS` (comma-separated fallback list; default
-`deepseek/deepseek-v4-flash-0731,openai/gpt-6-luna,nvidia/nemotron-3.5-super-vl:free`).
+`nvidia/nemotron-3.5-super-vl:free,google/gemma-4-31b-it:free,deepseek/deepseek-v4-flash-0731`).
 
 ## Deploy
 
@@ -169,10 +169,11 @@ public link. Past it the bot answers with the retrieved listings only.
 - **DarGlobal capture** is a one-off browser step because of the bot challenge, so
   refreshing it is semi-manual. A few "One of One" sub-pages render only generic
   collection text, so those projects have sparse details.
-- **LLM cost and quota**: the default chain is two cheap paid models on OpenRouter
-  (DeepSeek V4 Flash, then GPT-6 Luna), about $0.0005 per chat turn, with a free model
-  last. If you use only `:free` models, OpenRouter allows 50 requests a day without
-  purchased credits (1,000 once 5 credits are added). `PLANNER=hybrid` stretches that
-  by letting the rule-based planner handle clear first-turn questions without an LLM
-  call. If no model answers, the bot replies instantly with the retrieved listings and
-  a clear "model unavailable" label rather than failing.
+- **Free models first**: answers come from free OpenRouter models (Nemotron 3.5 Super, then
+  Gemma 4 31B). Free models are rate-limited (per minute, and 50 or 1,000 requests a day
+  depending on account credits), so a cheap paid model (DeepSeek V4 Flash, about $0.0005
+  per turn) is the last fallback to keep the public link working. Once the daily free
+  quota is gone, the bot skips free models until midnight UTC. `PLANNER=hybrid` saves calls
+  by letting the rule-based planner handle clear first-turn questions. If no model answers,
+  the bot replies instantly with the retrieved listings and a clear "model unavailable"
+  label rather than failing.

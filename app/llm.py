@@ -26,7 +26,9 @@ def _load_dotenv() -> None:
 
 _load_dotenv()
 
-DEFAULT_MODELS = "deepseek/deepseek-v4-flash-0731,openai/gpt-6-luna,nvidia/nemotron-3.5-super-vl:free"
+# Free OpenRouter models answer first. The cheap paid model is only a last resort for when the
+# free tier is rate-limited, so the public demo link keeps working.
+DEFAULT_MODELS = "nvidia/nemotron-3.5-super-vl:free,google/gemma-4-31b-it:free,deepseek/deepseek-v4-flash-0731"
 
 
 class LLMUnavailable(RuntimeError):
@@ -51,6 +53,7 @@ def client() -> OpenAI:
 
 
 _calls = {"day": "", "n": 0}
+_free_exhausted_on = ""  # UTC date the account-wide free-model daily quota ran out
 
 
 def _spend_guard() -> None:
@@ -69,11 +72,14 @@ def chat(messages: list[dict], temperature: float = 0.2, max_tokens: int = 2000)
 
     If every model was rate-limited, waits briefly and walks the chain once more
     (free models share a per-minute quota)."""
+    global _free_exhausted_on
     _spend_guard()
     errors = []
     for round_ in range(2):
         rate_limited_only = True
         for model in models():
+            if model.endswith(":free") and _free_exhausted_on == time.strftime("%Y-%m-%d", time.gmtime()):
+                continue
             try:
                 r = client().chat.completions.create(
                     model=model, messages=messages, temperature=temperature, max_tokens=max_tokens,
@@ -88,9 +94,12 @@ def chat(messages: list[dict], temperature: float = 0.2, max_tokens: int = 2000)
                 errors.append(f"{model}: empty response (finish={r.choices[0].finish_reason})")
                 rate_limited_only = False
             except RateLimitError as e:
-                if "per-day" in str(e):  # daily free quota is account-wide: no other model will work
-                    raise LLMUnavailable(f"{model}: daily free-model quota exhausted") from e
-                errors.append(f"{model}: rate limited")
+                if "per-day" in str(e):  # account-wide daily free quota: skip all :free models today
+                    _free_exhausted_on = time.strftime("%Y-%m-%d", time.gmtime())
+                    errors.append(f"{model}: daily free-model quota exhausted")
+                    rate_limited_only = False
+                else:
+                    errors.append(f"{model}: rate limited")
             except (APITimeoutError, APIConnectionError) as e:
                 errors.append(f"{model}: {type(e).__name__}")
                 rate_limited_only = False

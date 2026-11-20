@@ -329,6 +329,9 @@ def answer(message: str, history: list[dict] | None = None) -> dict:
     context = [f"DATA OVERVIEW: {_overview(idx)}"]
     if note:
         context.append(f"NOTE: {note}")
+    if hits and plan.sort and plan.intent == "listing_search":
+        context.append(f"NOTE: LISTINGS are already sorted ({plan.sort} first). The first one is the answer; "
+                       "report it even if its data looks unusual (you may point that out).")
     if hits:
         context.append("LISTINGS:\n" + "\n".join(_fmt_listing(r) for r in hits))
     if chunks:
