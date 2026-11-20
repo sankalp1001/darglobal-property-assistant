@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+from functools import lru_cache
 from typing import Literal, Optional
 
 from pydantic import BaseModel, ValidationError, field_validator
@@ -289,11 +290,31 @@ def _fallback_answer(hits: list[dict], chunks: list[dict], note: str | None, int
     return "\n".join(out)
 
 
+@lru_cache(maxsize=1)
+def _overview(idx) -> str:
+    """One line describing the whole snapshot, so 'what is Wasalt / what do you cover' has an answer."""
+    from collections import Counter
+
+    ws = [r for r in idx.listings if r.get("source") == "wasalt"]
+    dg = [r for r in idx.listings if r.get("source") == "darglobal"]
+    cities = ", ".join(f"{c} {n}" for c, n in Counter(r.get("city") for r in ws).most_common())
+    kinds = ", ".join(f"{k} {n}" for k, n in Counter(r.get("listing_type") for r in ws).most_common())
+    countries = ", ".join(c for c, _ in Counter(r.get("country") for r in dg).most_common())
+    return (f"Wasalt (wasalt.sa) is a Saudi property listings portal; this snapshot has {len(ws)} Wasalt "
+            f"listings ({kinds}; by city: {cities}) with SAR prices. DarGlobal (darglobal.co.uk) is a "
+            f"luxury branded-residence developer; {len(dg)} DarGlobal projects ({countries}), prices on request, "
+            f"plus {len(idx.pages)} chunks of DarGlobal company pages. Scraped on {idx.meta.get('scraped_on', 'n/a')}.")
+
+
 def answer(message: str, history: list[dict] | None = None) -> dict:
     history = history or []
     plan, plan_ok = understand(message, history)
     log.info("plan=%s ok=%s", plan.model_dump(exclude_none=True), plan_ok)
     idx = get_index()
+
+    # Only DarGlobal has company pages; a general question about Wasalt is answered from its listings
+    if plan.intent == "company_info" and plan.source == "wasalt":
+        plan.intent = "listing_search"
 
     if plan.intent == "chitchat":
         hits, chunks, note = [], [], None
@@ -305,7 +326,7 @@ def answer(message: str, history: list[dict] | None = None) -> dict:
         hits, note = retrieve_listings(plan)
         chunks = idx.search(PAGES, plan.rewritten_query, limit=2) if plan.source == "darglobal" else []
 
-    context = []
+    context = [f"DATA OVERVIEW: {_overview(idx)}"]
     if note:
         context.append(f"NOTE: {note}")
     if hits:

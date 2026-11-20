@@ -1,21 +1,144 @@
 [
-  {"category": "company", "turns": ["Who is DarGlobal?"], "expect": "Luxury/branded developer, global presence, cites About/FAQ"},
-  {"category": "company", "turns": ["Which countries does DarGlobal have projects in?"], "expect": "UAE, Saudi Arabia, Oman, Qatar, UK, Spain (+ Greece/Maldives per FAQ)"},
-  {"category": "company", "turns": ["How do I get residency by buying property in Saudi Arabia or the UAE?"], "expect": "SAR 4M Saudi residency; AED 2M UAE golden visa (Why Invest page)"},
-  {"category": "company", "turns": ["What services does AIDA 360 offer owners?"], "expect": "Residency permit help, bank account, short-term rental, remote handover..."},
-  {"category": "darglobal", "turns": ["Which DarGlobal projects are in Dubai and when do they hand over?"], "expect": "Trump Tower Dubai 2031, D-Villas 2029, DG1 2027, W Residences, Da Vinci, Urban Oasis"},
-  {"category": "darglobal", "turns": ["Do you have any branded villas in Spain?"], "expect": "Tierra Viva (Lamborghini) and/or Marea (Missoni), Painite"},
-  {"category": "darglobal", "turns": ["How much is an apartment at The Astera?"], "expect": "Price on request; must not invent a price"},
-  {"category": "darglobal", "turns": ["Show me DarGlobal projects in Oman with 5 bedrooms"], "expect": "Fairway Villas, Trump Golf Villas, Azure Oceanfront Villas"},
-  {"category": "wasalt", "turns": ["Show me apartments for sale in Riyadh under 1,000,000 SAR"], "expect": "Wasalt Riyadh apartments with price <= 1M SAR, URLs cited"},
-  {"category": "wasalt", "turns": ["I want a 4 bedroom villa for sale in Jeddah"], "expect": "Wasalt Jeddah villas with 4 bedrooms or a broadened note"},
-  {"category": "wasalt", "turns": ["What is the cheapest apartment for rent in Dammam?"], "expect": "Sorted by price, rent period stated"},
-  {"category": "wasalt", "turns": ["Largest villa for sale in Riyadh?"], "expect": "Sorted by area"},
-  {"category": "follow-up", "turns": ["Apartments for sale in Riyadh with 3 bedrooms", "What about cheaper ones in Jeddah?"], "expect": "Second turn rewritten to Jeddah apartments, cheaper"},
-  {"category": "follow-up", "turns": ["Tell me about W Residences", "Is it sold out?"], "expect": "Resolves 'it' to W Residences; status Sold Out"},
-  {"category": "cross-market", "turns": ["Compare a villa in Riyadh on Wasalt with DarGlobal's villas in Riyadh"], "expect": "Mix of Wasalt priced villas and DarGlobal Rayana/Neptune projects, price on request"},
-  {"category": "filters-empty", "turns": ["9 bedroom apartment in Dammam under 100,000 SAR"], "expect": "Broadened search note, no invented listings"},
-  {"category": "out-of-scope", "turns": ["What's the weather in Dubai tomorrow?"], "expect": "Says it isn't in the data"},
-  {"category": "out-of-scope", "turns": ["Do you have listings in Paris?"], "expect": "No Paris data"},
-  {"category": "chitchat", "turns": ["hi, what can you do?"], "expect": "Brief capability description"}
+  {
+    "category": "company",
+    "turns": [
+      "Who is DarGlobal?"
+    ],
+    "expect": "Luxury/branded developer, global presence, cites About/FAQ"
+  },
+  {
+    "category": "company",
+    "turns": [
+      "Which countries does DarGlobal have projects in?"
+    ],
+    "expect": "UAE, Saudi Arabia, Oman, Qatar, UK, Spain (+ Greece/Maldives per FAQ)"
+  },
+  {
+    "category": "company",
+    "turns": [
+      "How do I get residency by buying property in Saudi Arabia or the UAE?"
+    ],
+    "expect": "SAR 4M Saudi residency; AED 2M UAE golden visa (Why Invest page)"
+  },
+  {
+    "category": "company",
+    "turns": [
+      "What services does AIDA 360 offer owners?"
+    ],
+    "expect": "Residency permit help, bank account, short-term rental, remote handover..."
+  },
+  {
+    "category": "darglobal",
+    "turns": [
+      "Which DarGlobal projects are in Dubai and when do they hand over?"
+    ],
+    "expect": "Trump Tower Dubai 2031, D-Villas 2029, DG1 2027, W Residences, Da Vinci, Urban Oasis"
+  },
+  {
+    "category": "darglobal",
+    "turns": [
+      "Do you have any branded villas in Spain?"
+    ],
+    "expect": "Tierra Viva (Lamborghini) and/or Marea (Missoni), Painite"
+  },
+  {
+    "category": "darglobal",
+    "turns": [
+      "How much is an apartment at The Astera?"
+    ],
+    "expect": "Price on request; must not invent a price"
+  },
+  {
+    "category": "darglobal",
+    "turns": [
+      "Show me DarGlobal projects in Oman with 5 bedrooms"
+    ],
+    "expect": "Fairway Villas, Trump Golf Villas, Azure Oceanfront Villas"
+  },
+  {
+    "category": "wasalt",
+    "turns": [
+      "What is Wasalt?"
+    ],
+    "expect": "Saudi listings portal; snapshot counts by city/sale/rent; no 'no Wasalt data' reply"
+  },
+  {
+    "category": "wasalt",
+    "turns": [
+      "Show me apartments for sale in Riyadh under 1,000,000 SAR"
+    ],
+    "expect": "Wasalt Riyadh apartments with price <= 1M SAR, URLs cited"
+  },
+  {
+    "category": "wasalt",
+    "turns": [
+      "I want a 4 bedroom villa for sale in Jeddah"
+    ],
+    "expect": "Wasalt Jeddah villas with 4 bedrooms or a broadened note"
+  },
+  {
+    "category": "wasalt",
+    "turns": [
+      "What is the cheapest apartment for rent in Dammam?"
+    ],
+    "expect": "Sorted by price, rent period stated"
+  },
+  {
+    "category": "wasalt",
+    "turns": [
+      "Largest villa for sale in Riyadh?"
+    ],
+    "expect": "Sorted by area"
+  },
+  {
+    "category": "follow-up",
+    "turns": [
+      "Apartments for sale in Riyadh with 3 bedrooms",
+      "What about cheaper ones in Jeddah?"
+    ],
+    "expect": "Second turn rewritten to Jeddah apartments, cheaper"
+  },
+  {
+    "category": "follow-up",
+    "turns": [
+      "Tell me about W Residences",
+      "Is it sold out?"
+    ],
+    "expect": "Resolves 'it' to W Residences; status Sold Out"
+  },
+  {
+    "category": "cross-market",
+    "turns": [
+      "Compare a villa in Riyadh on Wasalt with DarGlobal's villas in Riyadh"
+    ],
+    "expect": "Mix of Wasalt priced villas and DarGlobal Rayana/Neptune projects, price on request"
+  },
+  {
+    "category": "filters-empty",
+    "turns": [
+      "9 bedroom apartment in Dammam under 100,000 SAR"
+    ],
+    "expect": "Broadened search note, no invented listings"
+  },
+  {
+    "category": "out-of-scope",
+    "turns": [
+      "What's the weather in Dubai tomorrow?"
+    ],
+    "expect": "Says it isn't in the data"
+  },
+  {
+    "category": "out-of-scope",
+    "turns": [
+      "Do you have listings in Paris?"
+    ],
+    "expect": "No Paris data"
+  },
+  {
+    "category": "chitchat",
+    "turns": [
+      "hi, what can you do?"
+    ],
+    "expect": "Brief capability description"
+  }
 ]
