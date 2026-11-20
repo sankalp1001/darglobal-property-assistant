@@ -1,0 +1,15 @@
+# Render Blueprint: free Docker web service (512 MB; sleeps after 15 min idle).
+# Render asks for OPENROUTER_API_KEY when the Blueprint is created; it is stored as a secret.
+services:
+  - type: web
+    name: darglobal-property-assistant
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: PORT
+        value: "7860"
+      - key: LLM_DAILY_LIMIT
+        value: "600"
